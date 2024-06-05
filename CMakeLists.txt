@@ -1,14 +1,24 @@
 cmake_minimum_required(VERSION 3.2)
-
+set(
+    CMAKE_TOOLCHAIN_FILE
+    "${CMAKE_SOURCE_DIR}/cmake/toolchain/cxx17.cmake"
+    CACHE
+    FILEPATH
+    "Default toolchain"
+)
 include(GNUInstallDirs)
 
 #---------------------------------------------------------------------------------------
 # Compiler config
 #---------------------------------------------------------------------------------------
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
-
+# set(CMAKE_CXX_STANDARD 11)
+# set(CMAKE_CXX_STANDARD_REQUIRED ON)
+# set(CMAKE_CXX_EXTENSIONS OFF)
+if(NOT EXISTS "${CMAKE_TOOLCHAIN_FILE}")
+    set(CMAKE_CXX_STANDARD 17)
+    set(CMAKE_CXX_STANDARD_REQUIRED ON)
+    set(CMAKE_CXX_EXTENSIONS OFF)
+endif()
 # Since delta-enabled-crdts is a template library we only need to copy headers to install derectory
 project(delta-enabled-crdts VERSION 0.1.0)
 
