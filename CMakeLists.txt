@@ -1,76 +1,56 @@
-cmake_minimum_required(VERSION 3.1.0)
-
-# Adhere the version number
-project(delta-enabled-crdts VERSION 0.1.0 LANGUAGES CXX)
-
-enable_language(ASM)
-
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-
-# Compile in C++11 mode
-if(NOT EXISTS "${CMAKE_TOOLCHAIN_FILE}")
-  set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)
-
-  set(CMAKE_CXX_STANDARD 11)  # force std = c++11
-  set(CMAKE_CXX_STANDARD_REQUIRED ON)
-endif()
-
-include_directories(
-  ${CMAKE_BINARY_DIR}/
-  ${CMAKE_SOURCE_DIR}/include/
-  ${CMAKE_SOURCE_DIR}/include/crdts
-)
-
-
-# Targets
-set(DELTA_CRDTS_LIBNAME delta-enabled-crdts)
-
-# To build and install a shared library: "cmake -DBUILD_SHARED_LIBS:BOOL=ON ..."
-add_library(${DELTA_CRDTS_LIBNAME}
-  src/delta-crdts.cc
-)
-
-set_target_properties(${DELTA_CRDTS_LIBNAME} PROPERTIES
-  SOVERSION ${PROJECT_VERSION_MAJOR}
-  VERSION ${PROJECT_VERSION}
-  ARCHIVE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib
-  LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib
-  RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
-)
+cmake_minimum_required(VERSION 3.2)
 
 include(GNUInstallDirs)
-set(INCLUDE_INSTALL_DIR "${CMAKE_INSTALL_INCLUDEDIR}/delta-enabled-crdts" )
-set(CONFIG_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/cmake/delta-enabled-crdts" )
-set(RUNTIME_INSTALL_DIR "${CMAKE_INSTALL_BINDIR}" )
-set(LIB_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}" )
-set(DATA_INSTALL_DIR "${CMAKE_INSTALL_DATADIR}/delta-enabled-crdts")
 
-install(TARGETS ${DELTA_CRDTS_LIBNAME} EXPORT deltaCrdtsConfig
-  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-  INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-  PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-  FRAMEWORK DESTINATION ${CMAKE_INSTALL_PREFIX}
+#---------------------------------------------------------------------------------------
+# Compiler config
+#---------------------------------------------------------------------------------------
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+# Since delta-enabled-crdts is a template library we only need to copy headers to install derectory
+project(delta-enabled-crdts VERSION 0.1.0)
+
+# # Define the library target
+# add_library(delta-enabled-crdts INTERFACE)
+# target_include_directories(delta-enabled-crdts INTERFACE
+        # "$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/.>"
+        # "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>")
+
+# target_sources(delta-enabled-crdts INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/delta-crdts.cc)
+
+# if (NOT DEFINED DELTACRDTS_BUILD_TESTS)
+    # # Enable tests by default
+    # set(DELTACRDTS_BUILD_TESTS ON)
+# endif()
+
+# if (DELTACRDTS_BUILD_TESTS)
+    # add_executable(delta-enabled-crdts-test
+        # delta-crdts.cc
+        # delta-tests.cc
+    # )
+# endif()
+include_directories(
+    ${CMAKE_SOURCE_DIR}
+    ${CMAKE_SOURCE_DIR}/include/crdts
 )
+add_subdirectory(${CMAKE_SOURCE_DIR}/src)
 
-install(
-  DIRECTORY ${CMAKE_SOURCE_DIR}/include/crdts
-  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-)
-
-install(FILES include/crdts/delta-crdts.h DESTINATION include/crdts)
-
-export(
-  TARGETS ${DELTA_CRDTS_LIBNAME}
-  FILE deltaCrdtsConfig.cmake
-)
-# Tests, use "CTEST_OUTPUT_ON_FAILURE=1 make test" to see output from failed tests
-
-# https://cmake.org/cmake/help/v3.0/module/CTest.html
-include(CTest)
-
-if(TESTING)
-  enable_testing()
-  add_subdirectory(test)
+if (NOT DEFINED DELTACRDTS_INSTALL)
+    # Enable installation
+    set(DELTACRDTS_INSTALL ON)
 endif()
+
+# Installation section
+if (DELTACRDTS_INSTALL)
+    # The original header file has .cc extension, therefore it is renamed during installation
+    install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/delta-crdts.cc DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}" RENAME delta-crdts.h)
+
+    if (DELTACRDTS_BUILD_TESTS)
+        install(TARGETS delta-enabled-crdts-test DESTINATION "${CMAKE_INSTALL_BINDIR}")
+    endif()
+endif()
+
+
+
