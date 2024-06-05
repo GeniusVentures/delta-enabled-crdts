@@ -32,6 +32,10 @@
 
 namespace crdts
 {
+  template class AWORSet<int, std::string>;
+  template class AWORSet<char, std::string>;
+  // template class DotKernel<char, std::string>;
+  // template class DotContext<char>;
   template<bool b> 
   struct JoinSelector 
   { 

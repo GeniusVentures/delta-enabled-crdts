@@ -20,7 +20,7 @@ if(NOT EXISTS "${CMAKE_TOOLCHAIN_FILE}")
     set(CMAKE_CXX_EXTENSIONS OFF)
 endif()
 # Since delta-enabled-crdts is a template library we only need to copy headers to install derectory
-project(delta-enabled-crdts VERSION 0.1.0)
+project(delta-enabled-crdts VERSION 0.1.0 LANGUAGES C CXX)
 
 
 include_directories(
