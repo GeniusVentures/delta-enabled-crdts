@@ -34,6 +34,7 @@ namespace crdts
 {
   template class AWORSet<int, std::string>;
   template class AWORSet<char, std::string>;
+  
   // template class DotKernel<char, std::string>;
   // template class DotContext<char>;
   template<bool b> 
@@ -47,6 +48,7 @@ namespace crdts
       res.join(r);
       return res;
     } 
+	
   };
 
   template<> 
@@ -68,9 +70,9 @@ namespace crdts
   template<typename T> 
   T join( const T& l, const T& r ) 
   {
-    return join_selector< is_arithmetic<T>::value >::join( l, r );
+    return JoinSelector< is_arithmetic<T>::value >::join( l, r );
   }
-
+  
 
   // Join two pairs of objects
   template<typename A, typename B> 
@@ -81,7 +83,7 @@ namespace crdts
     res.second = join( r.second, l.second );
     return res;
   }
-
+  template AWORSet<char, std::string> join(const AWORSet<char, std::string>& a, const AWORSet<char, std::string>& b);
   // Join lexicographic of two pairs of objects
   template<typename A, typename B> 
   pair<A, B> lexjoin(const pair<A, B>& l, const pair<A, B>& r)
@@ -176,30 +178,30 @@ namespace crdts
 #pragma region DotContext
 
   
-  template<typename K>
-  DotContext<K>& DotContext<K>::operator=( const DotContext<K>& o )
-  {
-    if (&o == this) return *this;
-    cc = o.cc; 
-    dc = o.dc;
-    return *this;
-  }
+  // template<typename K>
+  // DotContext<K>& DotContext<K>::operator=( const DotContext<K>& o )
+  // {
+    // if (&o == this) return *this;
+    // cc = o.cc; 
+    // dc = o.dc;
+    // return *this;
+  // }
 
-  template<typename K>
-  ostream& operator<<( ostream& output, const DotContext<K>& o )
-  { 
-    output << "Context:";
-    output << " CC ( ";
-    for (const auto & ki : o.cc)
-      output << ki.first << ":" << ki.second << " ";
-    output << ")";
-    output << " DC ( ";
-    for (const auto & ki : o.dc)
-      output << ki.first << ":" << ki.second << " ";
+  // template<typename K>
+  // ostream& operator<<( ostream& output, const DotContext<K>& o )
+  // { 
+    // output << "Context:";
+    // output << " CC ( ";
+    // for (const auto & ki : o.cc)
+      // output << ki.first << ":" << ki.second << " ";
+    // output << ")";
+    // output << " DC ( ";
+    // for (const auto & ki : o.dc)
+      // output << ki.first << ":" << ki.second << " ";
     
-    output << ")";
-    return output;            
-  }
+    // output << ")";
+    // return output;            
+  // }
 
   template<typename K>
   bool DotContext<K>::dotin( const pair<K, int>& d ) const
@@ -318,30 +320,30 @@ namespace crdts
 
 
 #pragma region DotKernel
-  template <typename T, typename K>
-  DotKernel<T, K>& DotKernel<T, K>::operator=( const DotKernel<T, K>& adk )
-  {
-    if ( &adk == this ) return *this;
-    if ( &c != &adk.c ) c = adk.c; 
-    ds = adk.ds;
-    return *this;
-  }
+  // template <typename T, typename K>
+  // DotKernel<T, K>& DotKernel<T, K>::operator=( const DotKernel<T, K>& adk )
+  // {
+    // if ( &adk == this ) return *this;
+    // if ( &c != &adk.c ) c = adk.c; 
+    // ds = adk.ds;
+    // return *this;
+  // }
 
-  template <typename T, typename K>
-  ostream& operator<<( ostream &output, const DotKernel<T, K>& o)
-  { 
-    output << "Kernel: DS ( ";
+  // template <typename T, typename K>
+  // ostream& operator<<( ostream &output, const DotKernel<T, K>& o)
+  // { 
+    // output << "Kernel: DS ( ";
     
-    for ( const auto & dv : o.ds )
-      output <<  dv.first.first << ":" << dv.first.second << 
-        "->" << dv.second << " ";
+    // for ( const auto & dv : o.ds )
+      // output <<  dv.first.first << ":" << dv.first.second << 
+        // "->" << dv.second << " ";
     
-    output << ") ";
+    // output << ") ";
 
-    cout << o.c;
+    // cout << o.c;
 
-    return output;            
-  }
+    // return output;            
+  // }
 
   template <typename T, typename K>
   void DotKernel<T, K>::join( const DotKernel<T, K>& o )
@@ -895,13 +897,12 @@ namespace crdts
     return dk.c;
   }
 
-  template<typename E, typename K> 
-  ostream& operator<<( ostream &output, const AWORSet<E, K>& o )
-  { 
-    output << "AWORSet:" << o.dk;
-    return output;            
-  }
-
+  // template<typename E, typename K> 
+  // ostream& operator<<( ostream &output, const AWORSet<E, K>& o )
+  // { 
+    // output << "AWORSet:" << o.dk;
+    // return output;            
+  // }
   template<typename E, typename K> 
   set<E> AWORSet<E, K>::read()
   {
@@ -956,6 +957,7 @@ namespace crdts
     // Further optimization can be done by keeping for val x and id A 
     // only the highest dot from A supporting x. 
   }
+  template std::ostream& operator<<(std::ostream &output, const AWORSet<char, std::string>& o);
 #pragma endregion
 
 #pragma region RWORSet

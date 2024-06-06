@@ -79,8 +79,28 @@ namespace crdts
   class DotContext
   {
   public:
-    DotContext<K>& operator=( const DotContext<K>& o );
-    friend ostream& operator<<( ostream& output, const DotContext<K>& o );
+    //DotContext<K>& operator=( const DotContext<K>& o );
+    //friend ostream& operator<<( ostream& output, const DotContext<K>& o );
+	  DotContext<K> & operator=(const DotContext<K> & o)
+	  {
+		if (&o == this) return *this;
+		cc=o.cc; dc=o.dc;
+		return *this;
+	  }
+
+	  friend ostream &operator<<( ostream &output, const DotContext<K>& o)
+	  { 
+		output << "Context:";
+		output << " CC ( ";
+		for (const auto & ki : o.cc)
+		  output << ki.first << ":" << ki.second << " ";
+		output << ")";
+		output << " DC ( ";
+		for (const auto & ki : o.dc)
+		  output << ki.first << ":" << ki.second << " ";
+		output << ")";
+		return output;            
+	  }
     bool dotin( const pair<K, int>& d ) const;
     void compact();
     pair<K, int> makeDot( const K& id );
@@ -102,8 +122,29 @@ namespace crdts
     DotKernel( DotContext<K>& jointc ) : c( jointc ) {} 
     //  DotKernel(const DotKernel<T,K> &adk) : c(adk.c), ds(adk.ds) {}
 
-    DotKernel<T, K>& operator=( const DotKernel<T, K>& adk );
-    friend ostream& operator<<( ostream &output, const DotKernel<T, K>& o);
+    //DotKernel<T, K>& operator=( const DotKernel<T, K>& adk );
+    //friend ostream& operator<<( ostream &output, const DotKernel<T, K>& o);
+	
+	  DotKernel<T,K> & operator=(const DotKernel<T,K> & adk)
+	  {
+		if (&adk == this) return *this;
+		if (&c != &adk.c) c=adk.c; 
+		ds=adk.ds;
+		return *this;
+	  }
+
+	  friend ostream &operator<<( ostream &output, const DotKernel<T,K>& o)
+	  { 
+		output << "Kernel: DS ( ";
+		for (const auto & dv : o.ds)
+		  output <<  dv.first.first << ":" << dv.first.second << 
+			"->" << dv.second << " ";
+		output << ") ";
+
+		cout << o.c;
+
+		return output;            
+	  }
     void join( const DotKernel<T, K>& o );
     void deepJoin( const DotKernel<T, K>& o );
     DotKernel<T, K> add( const K& id, const T& val );
@@ -306,8 +347,12 @@ namespace crdts
 
       DotContext<K>& context();
 
-      friend ostream& operator<<( ostream& output, const AWORSet<E, K>& o );
-
+      //friend ostream& operator<<( ostream& output, const AWORSet<E, K>& o );
+	  friend ostream &operator<<( ostream &output, const AWORSet<E,K>& o)
+	  { 
+		output << "AWORSet:" << o.dk;
+		return output;            
+	  }
       set<E> read();
 
       bool in(const E& val);
@@ -319,12 +364,11 @@ namespace crdts
       AWORSet<E,K> reset();
 
       void join( AWORSet<E, K> o );
-
+	  
   private:
       DotKernel<E, K>   dk; // Dot kernel
       K                 id;
   };
-
 
   // Map embedable datatype
   template<typename E, typename K = string> 
