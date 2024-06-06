@@ -34,9 +34,8 @@ namespace crdts
 {
   template class AWORSet<int, std::string>;
   template class AWORSet<char, std::string>;
+  template class AWORSet<std::string, std::string>;
   
-  // template class DotKernel<char, std::string>;
-  // template class DotContext<char>;
   template<bool b> 
   struct JoinSelector 
   { 
@@ -84,6 +83,7 @@ namespace crdts
     return res;
   }
   template AWORSet<char, std::string> join(const AWORSet<char, std::string>& a, const AWORSet<char, std::string>& b);
+  template AWORSet<std::string, std::string> join(const AWORSet<std::string, std::string>& a, const AWORSet<std::string, std::string>& b);
   // Join lexicographic of two pairs of objects
   template<typename A, typename B> 
   pair<A, B> lexjoin(const pair<A, B>& l, const pair<A, B>& r)
