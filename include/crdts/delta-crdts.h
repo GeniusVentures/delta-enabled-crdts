@@ -118,7 +118,7 @@ namespace crdts
 
     map<pair<K, int>, T>  ds;  // Map of dots to vals
     DotContext<K>         cbase;
-    DotContext<K>&        c;
+    DotContext<K>        c;
   };
 
 
