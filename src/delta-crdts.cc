@@ -957,7 +957,7 @@ namespace crdts
     // Further optimization can be done by keeping for val x and id A 
     // only the highest dot from A supporting x. 
   }
-  template std::ostream& operator<<(std::ostream &output, const AWORSet<char, std::string>& o);
+  
 #pragma endregion
 
 #pragma region RWORSet
